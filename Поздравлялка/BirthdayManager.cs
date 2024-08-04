@@ -37,19 +37,27 @@ namespace Congratulations
 		{
 			int userSelect = 0;
 			bool check = false;
-			while (!check)
+			if (birthdays.Count != 0)
 			{
-				Console.WriteLine("Введите номер записи, которую вы хотите удалить ");
-				check = int.TryParse(Console.ReadLine(), out userSelect);
-				if (!check || userSelect < 1 || userSelect > birthdays.Count)
+				while (!check)
 				{
-					check = false;
-					Console.WriteLine("Вы ввели неправильный номер записи, попробуйте еще раз");
+					Console.WriteLine("Введите номер записи, которую вы хотите удалить ");
+					check = int.TryParse(Console.ReadLine(), out userSelect);
+					if (!check || userSelect < 1 || userSelect > birthdays.Count)
+					{
+						check = false;
+						Console.WriteLine("Вы ввели неправильный номер записи, попробуйте еще раз");
+					}
 				}
+				birthdays.Remove(birthdays[userSelect - 1]);
+				context.Remove(birthdays[userSelect - 1]);
+				context.UpdateRange();
 			}
-			birthdays.Remove(birthdays[userSelect - 1]);
-			context.Remove(birthdays[userSelect - 1]);
-			context.UpdateRange();
+			else
+			{
+				Console.WriteLine("Список пуст");
+				Console.ReadKey();
+			}
 		}
 
 		public void NearBirthdays()
@@ -66,55 +74,63 @@ namespace Congratulations
 		public void SearchElements()
 		{
 			temp.Clear();
-			while (true)
+			if (birthdays.Count != 0)
 			{
-				Console.WriteLine("По какому параметру вы хотите отыскать элемент?\n1 - Порядковый номер\n2 - Имя\n3 - Категория\n4 - Дата рождения\n5 - Возраст");
-				element.ValidNumber();
-				switch (element.userSelect)
+				while (true)
 				{
-					case 1:
-						Console.WriteLine("Введите порядковый номер записи, которую вы хотите найти");
-						element.ValidIndex();
-						temp.Add(birthdays[element.userSelect - 1]);
-						OutputList(temp);
-						return;
-					case 2:
-						element.ValidName();
-						foreach (var birthday in birthdays.Where(x => string.Compare(x.Name, element.name) == 0))
-						{
-							temp.Add(birthday);
-						}
-						OutputList(temp);
-						return;
-					case 3:
-						element.ValidCategory();
-						foreach (var birthday in birthdays.Where(x => string.Compare(x.Category, element.category) == 0))
-						{
-							temp.Add(birthday);
-						}
-						OutputList(temp);
-						return;
-					case 4:
-						element.ValidDate();
-						foreach (var birthday in birthdays.Where(x => x.Date == element.date))
-						{
-							temp.Add(birthday);
-						}
-						OutputList(temp);
-						return;
-					case 5:
-						element.ValidNumber();
-						foreach (var birthday in birthdays.Where(x => x.Age == element.userSelect))
-						{
-							temp.Add(birthday);
-						}
-						OutputList(temp);
-						return;
-					default:
-						Console.WriteLine("Вы ввели неправильный номер функции\nПопробуйте еще раз");
-						Console.ReadKey();
-						break;
+					Console.WriteLine("По какому параметру вы хотите отыскать элемент?\n1 - Порядковый номер\n2 - Имя\n3 - Категория\n4 - Дата рождения\n5 - Возраст");
+					element.ValidNumber();
+					switch (element.userSelect)
+					{
+						case 1:
+							Console.WriteLine("Введите порядковый номер записи, которую вы хотите найти");
+							element.ValidIndex();
+							temp.Add(birthdays[element.userSelect - 1]);
+							OutputList(temp);
+							return;
+						case 2:
+							element.ValidName();
+							foreach (var birthday in birthdays.Where(x => string.Compare(x.Name, element.name) == 0))
+							{
+								temp.Add(birthday);
+							}
+							OutputList(temp);
+							return;
+						case 3:
+							element.ValidCategory();
+							foreach (var birthday in birthdays.Where(x => string.Compare(x.Category, element.category) == 0))
+							{
+								temp.Add(birthday);
+							}
+							OutputList(temp);
+							return;
+						case 4:
+							element.ValidDate();
+							foreach (var birthday in birthdays.Where(x => x.Date == element.date))
+							{
+								temp.Add(birthday);
+							}
+							OutputList(temp);
+							return;
+						case 5:
+							element.ValidNumber();
+							foreach (var birthday in birthdays.Where(x => x.Age == element.userSelect))
+							{
+								temp.Add(birthday);
+							}
+							OutputList(temp);
+							return;
+						default:
+							Console.WriteLine("Вы ввели неправильный номер функции\nПопробуйте еще раз");
+							Console.ReadKey();
+							break;
+					}
 				}
+			}
+			else
+			{
+				Console.WriteLine("Список пуст");
+				Console.ReadKey();
 			}
 		}
 
@@ -122,54 +138,62 @@ namespace Congratulations
 		{
 			ConsoleKey answer;
 			int userSelect;
-			Console.WriteLine("Выберите номер записи, данные которой вы хотите изменить");
-			element.ValidIndex();
-			userSelect = element.userSelect - 1;
-			Console.WriteLine("Хотите ли вы полностью изменить данные записи? любая клавиша - да, 0 - нет");
-			answer = Console.ReadKey().Key;
-			if(answer != ConsoleKey.D0)
+			if (birthdays.Count != 0)
 			{
-				element = new Valid();
-				birthdays[userSelect].Name = element.name;
-				birthdays[userSelect].Category = element.category;
-				birthdays[userSelect].Date = element.date;
-				birthdays[userSelect].Age = element.age;
-			}
-			else
-			{
-				Console.WriteLine("Хотите ли вы изменить имя? любая клавиша - да, 0 - нет");
+				Console.WriteLine("Выберите номер записи, данные которой вы хотите изменить");
+				element.ValidIndex();
+				userSelect = element.userSelect - 1;
+				Console.WriteLine("Хотите ли вы полностью изменить данные записи? любая клавиша - да, 0 - нет");
 				answer = Console.ReadKey().Key;
-				if(answer != ConsoleKey.D0)
+				if (answer != ConsoleKey.D0)
 				{
-					element.ValidName();
-					birthdays[element.userSelect - 1].Name = element.name;
-				}
-				Console.WriteLine("Хотите ли вы изменить категорию? любая клавиша - да, 0 - нет");
-				answer = Console.ReadKey().Key;
-				if(answer != ConsoleKey.D0)
-				{
-					element.ValidCategory();
-					birthdays[element.userSelect - 1].Category = element.category;
-				}
-				Console.WriteLine("Хотите ли вы изменить дату? любая клавиша - да, 0 - нет");
-				answer = Console.ReadKey().Key;
-				if(answer != ConsoleKey.D0)
-				{
-					element.ValidDate();
+					element = new Valid();
+					birthdays[userSelect].Name = element.name;
+					birthdays[userSelect].Category = element.category;
 					birthdays[userSelect].Date = element.date;
-					birthdays[userSelect].Age = DateTime.Today.Year - element.date.Year;
-					if (DateTime.Today.Month < element.date.Month)
+					birthdays[userSelect].Age = element.age;
+				}
+				else
+				{
+					Console.WriteLine("Хотите ли вы изменить имя? любая клавиша - да, 0 - нет");
+					answer = Console.ReadKey().Key;
+					if (answer != ConsoleKey.D0)
 					{
-						birthdays[userSelect].Age--;
+						element.ValidName();
+						birthdays[element.userSelect - 1].Name = element.name;
 					}
-					else if (DateTime.Today.Month == element.date.Month)
+					Console.WriteLine("Хотите ли вы изменить категорию? любая клавиша - да, 0 - нет");
+					answer = Console.ReadKey().Key;
+					if (answer != ConsoleKey.D0)
 					{
-						if (DateTime.Today.Day < element.date.Day)
+						element.ValidCategory();
+						birthdays[element.userSelect - 1].Category = element.category;
+					}
+					Console.WriteLine("Хотите ли вы изменить дату? любая клавиша - да, 0 - нет");
+					answer = Console.ReadKey().Key;
+					if (answer != ConsoleKey.D0)
+					{
+						element.ValidDate();
+						birthdays[userSelect].Date = element.date;
+						birthdays[userSelect].Age = DateTime.Today.Year - element.date.Year;
+						if (DateTime.Today.Month < element.date.Month)
 						{
 							birthdays[userSelect].Age--;
 						}
+						else if (DateTime.Today.Month == element.date.Month)
+						{
+							if (DateTime.Today.Day < element.date.Day)
+							{
+								birthdays[userSelect].Age--;
+							}
+						}
 					}
 				}
+			}
+			else
+			{
+				Console.WriteLine("Список пуст");
+				Console.ReadKey();
 			}
 		}
 
@@ -183,7 +207,7 @@ namespace Congratulations
 			while (check)
 			{
 				Console.Clear();
-				if (list == null)
+				if (list.Count == 0)
 				{
 					Console.WriteLine("Список пуст");
 				}
